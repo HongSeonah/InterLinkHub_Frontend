@@ -3,7 +3,7 @@ import { clearToken, getToken } from './auth'
 
 const baseURL =
   import.meta.env.VITE_API_BASE_URL ||
-  (import.meta.env.PROD ? '/api' : 'http://13.209.75.91:8080')
+  (import.meta.env.PROD ? '' : 'http://13.209.75.91:8080')
 
 export const api = axios.create({
   baseURL,
