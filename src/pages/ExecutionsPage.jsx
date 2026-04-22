@@ -396,7 +396,7 @@ export function ExecutionsPage() {
                     </div>
                     <div>
                       <span>처리 시간</span>
-                      <strong>{selectedExecution.durationMillis ?? 0} 밀리초</strong>
+                      <strong>{selectedExecution.durationMillis ?? 0} ms</strong>
                     </div>
                   </div>
 

@@ -20,6 +20,11 @@ function formatExecutionStatus(value) {
   return labels[value] ?? value ?? '-'
 }
 
+function clampPercent(value, maxValue) {
+  if (!maxValue) return 0
+  return Math.max(8, Math.min(100, Math.round((value / maxValue) * 100)))
+}
+
 export function DashboardPage() {
   const summaryQuery = useQuery({
     queryKey: ['dashboard-summary'],
@@ -33,6 +38,10 @@ export function DashboardPage() {
 
   const summary = summaryQuery.data ?? {}
   const failures = failureQuery.data ?? []
+  const averageLatency = Number(summary.averageLatencyMillis ?? 0)
+  const maxLatency = Number(summary.maxLatencyMillis ?? 0)
+  const timeoutCount = Number(summary.todayTimeoutCount ?? 0)
+  const latencyPeak = Math.max(averageLatency, maxLatency, timeoutCount, 1)
 
   return (
     <div className="page-stack">
@@ -52,7 +61,7 @@ export function DashboardPage() {
         <article className="panel">
           <div className="panel-heading">
             <h3>처리 시간</h3>
-            <span>밀리초</span>
+            <span>ms</span>
           </div>
           <div className="metric-row">
             <div>
@@ -66,6 +75,31 @@ export function DashboardPage() {
             <div>
               <p>시간 초과</p>
               <strong>{formatNumber(summary.todayTimeoutCount)}</strong>
+            </div>
+          </div>
+          <div className="latency-visual" aria-hidden="true">
+            <div className="latency-bars">
+              <div className="latency-bar-group">
+                <span className="latency-bar-label">평균</span>
+                <div className="latency-bar-track">
+                  <div className="latency-bar" style={{ height: `${clampPercent(averageLatency, latencyPeak)}%` }} />
+                </div>
+              </div>
+              <div className="latency-bar-group">
+                <span className="latency-bar-label">최대</span>
+                <div className="latency-bar-track">
+                  <div className="latency-bar" style={{ height: `${clampPercent(maxLatency, latencyPeak)}%` }} />
+                </div>
+              </div>
+              <div className="latency-bar-group">
+                <span className="latency-bar-label">초과</span>
+                <div className="latency-bar-track">
+                  <div className="latency-bar latency-bar-alert" style={{ height: `${clampPercent(timeoutCount, latencyPeak)}%` }} />
+                </div>
+              </div>
+            </div>
+            <div className="latency-note">
+              오늘 처리 시간의 상대적인 흐름을 보여줍니다.
             </div>
           </div>
         </article>

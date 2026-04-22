@@ -118,6 +118,14 @@ export function LogsPage() {
         <div className="split-layout logs-layout">
           <div className="table-card">
             <table className="logs-table">
+              <colgroup>
+                <col className="logs-col-id" />
+                <col className="logs-col-interface" />
+                <col className="logs-col-step" />
+                <col className="logs-col-level" />
+                <col className="logs-col-time" />
+                <col />
+              </colgroup>
               <thead>
                 <tr>
                   <th>실행 번호</th>
